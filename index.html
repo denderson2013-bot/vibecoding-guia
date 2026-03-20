@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vibe Coding — Crie seu Primeiro App com IA | Instituto Avalanche</title>
+  <meta name="description" content="Aprenda a criar aplicativos sem código usando Google AI Studio. Passo a passo gratuito.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { 'inter': ['Inter', 'sans-serif'] },
+          colors: {
+            dark: { 900: '#020408', 800: '#050505', 700: '#0a0a0f' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body { background: #020408; }
+
+    .glow-red { box-shadow: 0 0 30px rgba(239, 68, 68, 0.15), 0 0 60px rgba(239, 68, 68, 0.05); }
+    .glow-red-strong { box-shadow: 0 0 40px rgba(239, 68, 68, 0.25), 0 0 80px rgba(239, 68, 68, 0.1); }
+    .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.06); }
+    .glass-red { background: rgba(239, 68, 68, 0.04); backdrop-filter: blur(12px); border: 1px solid rgba(239, 68, 68, 0.12); }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .btn-shimmer {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #dc2626, #ef4444, #dc2626);
+    }
+    .btn-shimmer::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
+      background-size: 200% 100%;
+      animation: shimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-in { opacity: 0; animation: fadeInUp 0.7s ease-out forwards; }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+    .delay-5 { animation-delay: 0.5s; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.3), transparent);
+    }
+
+    .step-number {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.25rem;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #ef4444;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 24px;
+      backdrop-filter: blur(8px);
+      transition: all 0.3s;
+    }
+    .feature-card:hover {
+      border-color: rgba(239, 68, 68, 0.2);
+      background: rgba(239, 68, 68, 0.03);
+    }
+
+    .input-field {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 14px 16px;
+      color: white;
+      font-size: 0.95rem;
+      width: 100%;
+      transition: all 0.3s;
+      outline: none;
+    }
+    .input-field:focus {
+      border-color: rgba(239, 68, 68, 0.5);
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+    .input-field::placeholder { color: rgba(255, 255, 255, 0.3); }
+
+    select.input-field {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23666' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+    }
+    select.input-field option { background: #111; color: white; }
+
+    .tab-btn {
+      padding: 10px 24px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .tab-btn.active {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #ef4444;
+    }
+    .tab-btn:not(.active) {
+      background: rgba(255, 255, 255, 0.04);
+      color: #999;
+    }
+    .tab-btn:not(.active):hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ccc;
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    code { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+  </style>
+</head>
+<body class="text-white antialiased">
+
+  <!-- ============================================ -->
+  <!-- SEÇÃO 1: Oferta Formação Avalanche (INTACTA) -->
+  <!-- ============================================ -->
+  <section class="min-h-screen flex flex-col items-center justify-center px-4 py-16 md:py-24 relative overflow-hidden">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-red-500/5 rounded-full blur-[150px] pointer-events-none"></div>
+
+    <div class="max-w-5xl mx-auto relative z-10">
+      <div class="text-center mb-10 animate-in delay-1">
+        <span class="badge bg-red-500/10 border border-red-500/20 text-red-400">
+          <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+          MÓDULO EXCLUSIVO — SÓ NA FORMAÇÃO AVALANCHE
+        </span>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+        <div class="order-2 md:order-1">
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight mb-4 leading-tight animate-in delay-2">
+            Se você ainda não tem o seu OpenClaw, nós te ajudamos a instalar dentro da
+            <span class="bg-gradient-to-r from-red-500 to-red-400 bg-clip-text text-transparent"> Formação Avalanche</span>
+          </h1>
+
+          <h2 class="text-xl md:text-2xl font-bold text-white/90 mb-6 animate-in delay-2">
+            A melhor agente autônoma que realmente coordena
+            <span class="text-red-500">uma equipe inteira</span>
+          </h2>
+
+          <p class="text-lg text-gray-300 mb-4 animate-in delay-3">
+            Copy, Designer, Social Seller, Mídia, Vendedor SDR. Tudo pronto e rodando em menos de um dia, 100% com inteligência artificial.
+          </p>
+          <p class="text-gray-400 mb-8 animate-in delay-3">
+            Use essa estrutura na sua empresa, ou fature vendendo serviços feitos pelos seus novos agentes!
+          </p>
+
+          <div class="flex flex-wrap gap-3 mb-10 animate-in delay-4">
+            <span class="pill glass text-gray-300">
+              <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
+              Aula prática
+            </span>
+            <span class="pill glass text-gray-300">
+              <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
+              Sem código
+            </span>
+            <span class="pill glass text-gray-300">
+              <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
+              Roda 24h sozinho
+            </span>
+          </div>
+
+          <a href="https://pay.hotmart.com/N100965162Y?off=dwz4x1ft" target="_blank" rel="noopener noreferrer"
+             class="btn-shimmer inline-flex items-center justify-center gap-3 px-10 py-5 rounded-xl text-white font-bold text-lg tracking-wide glow-red-strong transition-all duration-300 hover:scale-[1.03] hover:shadow-red-500/30 hover:shadow-2xl animate-in delay-5">
+            <span class="relative z-10">QUERO MEU AGENTE DE IA RODANDO 24H</span>
+            <svg class="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+          </a>
+        </div>
+
+        <div class="glass-red rounded-2xl p-3 glow-red order-1 md:order-2 animate-in delay-3">
+          <img src="https://formacao2.crmavalanche.com/assets/naia-openclaw-banner.png"
+               alt="Naia — Agente IA Autônoma da Formação Avalanche"
+               class="w-full rounded-xl"
+               loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider max-w-3xl mx-auto"></div>
+
+  <!-- ============================================== -->
+  <!-- SEÇÃO 2: Consultoria IA — Formulário de leads  -->
+  <!-- ============================================== -->
+  <section id="consultoria" class="px-4 py-20 md:py-28 relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-red-500/5 rounded-full blur-[150px] pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-red-600/3 rounded-full blur-[120px] pointer-events-none"></div>
+
+    <div class="max-w-5xl mx-auto relative z-10">
+
+      <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
+
+        <!-- Lado esquerdo: Copy -->
+        <div>
+          <div class="mb-6">
+            <span class="badge bg-red-500/10 border border-red-500/20 text-red-400">
+              <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+              PARA EMPRESAS QUE FATURAM +R$1M/ANO
+            </span>
+          </div>
+
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight mb-6 leading-tight">
+            Nós podemos
+            <span class="bg-gradient-to-r from-red-500 to-red-400 bg-clip-text text-transparent"> triplicar seu resultado</span>
+            aplicando inteligência artificial
+          </h2>
+
+          <p class="text-lg text-gray-300 mb-6">
+            IA em todas as etapas do seu marketing e vendas. Prospecção, qualificação, atendimento, conteúdo, tráfego e análise de dados. Tudo automatizado, tudo integrado.
+          </p>
+
+          <div class="space-y-4 mb-8">
+            <div class="flex items-start gap-3">
+              <div class="w-6 h-6 mt-0.5 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                <svg class="w-3.5 h-3.5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+              </div>
+              <p class="text-gray-400">Agentes SDR que atendem, qualificam e agendam <strong class="text-white">24h por dia via WhatsApp</strong></p>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-6 h-6 mt-0.5 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                <svg class="w-3.5 h-3.5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+              </div>
+              <p class="text-gray-400">Redução de até <strong class="text-white">80% na folha comercial</strong> com performance superior</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-6 h-6 mt-0.5 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                <svg class="w-3.5 h-3.5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+              </div>
+              <p class="text-gray-400">Automação completa de <strong class="text-white">marketing, funil e CRM</strong></p>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-6 h-6 mt-0.5 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                <svg class="w-3.5 h-3.5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+              </div>
+              <p class="text-gray-400"><strong class="text-white">+30 empresas</strong> já operam com nossos agentes de IA</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lado direito: Formulário -->
+        <div class="glass-red rounded-2xl p-6 md:p-8 glow-red">
+          <h3 class="text-xl font-bold mb-2 text-center">Agende uma reunião com nosso time</h3>
+          <p class="text-sm text-gray-400 mb-8 text-center">Preencha abaixo que um consultor especializado entra em contato.</p>
+
+          <form id="leadForm" class="space-y-4" onsubmit="submitForm(event)">
+            <div>
+              <input type="text" name="name" placeholder="Seu nome completo" required class="input-field">
+            </div>
+            <div>
+              <input type="email" name="email" placeholder="Seu melhor e-mail" required class="input-field">
+            </div>
+            <div>
+              <input type="tel" name="phone" placeholder="WhatsApp com DDD" required class="input-field">
+            </div>
+            <div>
+              <select name="segment" required class="input-field">
+                <option value="" disabled selected>Segmento da empresa</option>
+                <option value="educacao">Educação / Infoprodutos</option>
+                <option value="saude">Saúde / Clínicas</option>
+                <option value="ecommerce">E-commerce / Varejo</option>
+                <option value="servicos">Serviços / Consultoria</option>
+                <option value="saas">SaaS / Tecnologia</option>
+                <option value="imobiliario">Imobiliário</option>
+                <option value="agencia">Agência / Marketing</option>
+                <option value="outro">Outro</option>
+              </select>
+            </div>
+            <div>
+              <select name="revenue" required class="input-field">
+                <option value="" disabled selected>Faixa de faturamento anual</option>
+                <option value="1m-3m">R$1M — R$3M</option>
+                <option value="3m-5m">R$3M — R$5M</option>
+                <option value="5m-10m">R$5M — R$10M</option>
+                <option value="10m-50m">R$10M — R$50M</option>
+                <option value="50m+">Acima de R$50M</option>
+              </select>
+            </div>
+
+            <button type="submit" id="submitBtn"
+                    class="btn-shimmer w-full flex items-center justify-center gap-3 px-8 py-4 rounded-xl text-white font-bold text-base tracking-wide glow-red-strong transition-all duration-300 hover:scale-[1.02] mt-6">
+              <span class="relative z-10" id="btnText">AGENDAR MINHA REUNIÃO</span>
+              <svg class="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+            </button>
+          </form>
+
+          <div id="successMsg" class="hidden text-center py-8">
+            <div class="text-4xl mb-4">✅</div>
+            <h4 class="text-xl font-bold text-white mb-2">Recebemos seus dados!</h4>
+            <p class="text-gray-400">Um consultor vai entrar em contato pelo WhatsApp em até 24h.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider max-w-3xl mx-auto"></div>
+
+  <!-- ===================================================== -->
+  <!-- SEÇÃO 3: Guia — Crie seu Primeiro App no Google AI Studio -->
+  <!-- ===================================================== -->
+  <section class="px-4 py-16 md:py-24 relative overflow-hidden">
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-red-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+    <div class="max-w-4xl w-full mx-auto relative z-10">
+
+      <div class="text-center mb-6">
+        <span class="badge glass-red text-red-400 inline-block">
+          <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+          VIBE CODING — PASSO A PASSO
+        </span>
+      </div>
+
+      <h2 class="text-3xl md:text-5xl font-black tracking-tight mb-4 text-center">
+        Crie seu Primeiro App no<br>
+        <span class="bg-gradient-to-r from-red-500 to-red-400 bg-clip-text text-transparent">Google AI Studio</span>
+      </h2>
+
+      <p class="text-lg md:text-xl text-gray-400 mb-6 text-center max-w-2xl mx-auto">
+        Sem código, sem programador, sem custo. A plataforma cria tudo pra você. Siga os passos abaixo.
+      </p>
+
+      <!-- O que você vai criar -->
+      <div class="glass rounded-2xl p-6 md:p-8 mb-10">
+        <h3 class="text-xl font-bold mb-3">O que você vai criar</h3>
+        <p class="text-gray-400 mb-4">Um aplicativo completo que funciona de verdade. Você escolhe o que quer construir, descreve em português, e a IA monta tudo: interface, lógica e funcionalidades.</p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+          <div class="text-center p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="text-2xl mb-2">📊</div>
+            <p class="text-xs text-gray-400">Dashboards</p>
+          </div>
+          <div class="text-center p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="text-2xl mb-2">🤖</div>
+            <p class="text-xs text-gray-400">Chatbots</p>
+          </div>
+          <div class="text-center p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="text-2xl mb-2">📋</div>
+            <p class="text-xs text-gray-400">CRMs</p>
+          </div>
+          <div class="text-center p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="text-2xl mb-2">🔍</div>
+            <p class="text-xs text-gray-400">Analisadores</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passos -->
+      <div class="space-y-8">
+
+        <div class="flex gap-5 items-start">
+          <div class="step-number">1</div>
+          <div>
+            <h3 class="text-lg font-bold mb-1">Acesse o Google AI Studio</h3>
+            <p class="text-gray-400 text-sm">Abra o Google e pesquise <strong class="text-white">Google AI Studio</strong>. Faça login com sua conta do Google. É grátis, não precisa de cartão.</p>
+            <a href="https://aistudio.google.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-3 text-red-400 hover:text-red-300 font-medium text-sm transition-colors">
+              Abrir Google AI Studio
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="flex gap-5 items-start">
+          <div class="step-number">2</div>
+          <div>
+            <h3 class="text-lg font-bold mb-1">Clique em "Build"</h3>
+            <p class="text-gray-400 text-sm">Depois de fazer login, clique no botão <strong class="text-white">Build</strong> para abrir a tela de criação de aplicativo. A plataforma cria tudo pra você: front-end, código e lógica.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-5 items-start">
+          <div class="step-number">3</div>
+          <div>
+            <h3 class="text-lg font-bold mb-1">Descreva o app que você quer</h3>
+            <p class="text-gray-400 text-sm">Na tela do Build, descreva em <strong class="text-white">português normal</strong> o que seu aplicativo deve fazer. Seja específico: quais campos, quais funcionalidades, o que o usuário vê. Quanto mais detalhado, melhor o resultado.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-5 items-start">
+          <div class="step-number">4</div>
+          <div>
+            <h3 class="text-lg font-bold mb-1">Aguarde a IA criar</h3>
+            <p class="text-gray-400 text-sm">Clique em Build e a plataforma gera tudo automaticamente. Ela cria a <strong class="text-white">interface, a lógica e o layout</strong>. Você só precisa esperar. Se não gostou de algo, peça ajustes no chat.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-5 items-start">
+          <div class="step-number">5</div>
+          <div>
+            <h3 class="text-lg font-bold mb-1">Conecte ao banco de dados (Supabase)</h3>
+            <p class="text-gray-400 text-sm">Pra salvar dados de verdade, crie uma conta gratuita no <a href="https://supabase.com" target="_blank" class="text-red-400 hover:text-red-300 underline underline-offset-2">Supabase</a>. Depois peça pra IA no Google AI Studio: <strong class="text-white">"Conecte esse app ao Supabase"</strong>. Ela faz a integração.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-5 items-start">
+          <div class="step-number">6</div>
+          <div>
+            <h3 class="text-lg font-bold mb-1">Teste, ajuste e publique</h3>
+            <p class="text-gray-400 text-sm">Teste o app, peça ajustes conversando com a IA, e quando estiver pronto, publique. Você pode hospedar gratuitamente na <strong class="text-white">Vercel</strong> ou usar o próprio Google AI Studio pra compartilhar o link.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Dica final -->
+      <div class="glass-red rounded-2xl p-6 mt-10 glow-red">
+        <div class="flex items-start gap-4">
+          <div class="text-3xl">💡</div>
+          <div>
+            <h4 class="font-bold text-white mb-2">Dica importante</h4>
+            <p class="text-gray-400 text-sm">O segredo do Vibe Coding não é a ferramenta, é o <strong class="text-white">prompt</strong>. Quanto melhor você descrever o que quer, melhor o app que a IA cria. Pense como se estivesse explicando pra um programador muito bom, mas que não sabe nada sobre o seu negócio.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-8 text-center border-t border-white/5">
+    <p class="text-sm text-gray-600">&copy; 2026 Instituto Avalanche</p>
+  </footer>
+
+  <script>
+    // Form submit
+    async function submitForm(e) {
+      e.preventDefault();
+      const form = e.target;
+      const btn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      
+      btnText.textContent = 'Enviando...';
+      btn.disabled = true;
+      btn.style.opacity = '0.7';
+
+      const data = {
+        name: form.name.value,
+        email: form.email.value,
+        phone: form.phone.value,
+        segment: form.segment.value,
+        revenue: form.revenue.value,
+        source: 'vibecoding-guia-landing'
+      };
+
+      // Webhook LeadConnector
+      const webhookUrl = "https://services.leadconnectorhq.com/hooks/sVzQ1MyiOqQn2e6Yuzu1/webhook-trigger/cb2f1255-6854-4a41-a1c0-f86086628903";
+
+      try {
+        await fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+      } catch (err) {
+        console.error('Webhook error:', err);
+      }
+
+      form.classList.add('hidden');
+      document.getElementById('successMsg').classList.remove('hidden');
+    }
+  </script>
+
+</body>
+</html>
