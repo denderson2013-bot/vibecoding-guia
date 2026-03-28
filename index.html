@@ -166,6 +166,15 @@
     .tab-content.active { display: block; }
 
     code { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+@property --angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+@keyframes led-rotate { to { --angle: 360deg; } }
+.led-glow {
+  position: relative;
+  border-radius: 16px;
+  padding: 3px;
+  background: conic-gradient(from var(--angle), #020408, #dc2626, #f87171, #ffffff, #f87171, #dc2626, #020408);
+  animation: led-rotate 3s linear infinite;
+}
   </style>
 </head>
 <body class="text-white antialiased">
@@ -176,6 +185,13 @@
       <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-red-500/30 bg-red-500/10 text-red-400 text-sm font-semibold mb-6">
         <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
         IMERSÃO AO VIVO 11/04/2026
+      </div>
+      <div class="max-w-2xl mx-auto mb-8">
+        <div class="led-glow rounded-2xl">
+          <div class="rounded-xl overflow-hidden">
+            <img src="claude-vs-openclaw-wide.png" alt="Imersão ao Vivo Claude + OpenClaw" class="w-full object-cover rounded-xl">
+          </div>
+        </div>
       </div>
       <h2 class="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">
         Domine a IA Que Está <span class="text-red-500">Substituindo Equipes Inteiras</span>
